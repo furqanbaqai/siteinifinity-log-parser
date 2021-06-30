@@ -1,0 +1,44 @@
+The computer has rebooted from a bugcheck.  The bugcheck was: 0x0000007e (0xffffffffc0000005, 0xfffff8016b96251f, 0xffffeb88d5b105c8, 0xffffeb88d5b0fe00). A dump was saved in: C:\windows\MEMORY.DMP. Report Id: 7e4ed4c2-2ff8-41bf-b34c-c45eafee4ddc.
+
+
+export SI_SOURCE_LOG_DIR=/home/spire/source/sib/audit.logs && export SI_SI_POOL_INTERVAL=10 && SI_DEST_DIR=/home/spire/source/sib/audit.logs/archive && export SI_DB_SERVER=tcp:192.168.203.128,1433 && export SI_DB_DATABASE=SiteInfinityDB && export SI_DB_USERNAME=sa && export SI_DB_PASS=abcd@1234 && python3 BootStart.py
+
+export SI_DB_SERVER=tcp:192.168.203.128,1433 && export SI_DB_DATABASE=SiteInfinityDB && export SI_DB_USERNAME=sa && export SI_DB_PASS=abcd@1234
+
+docker run --name siteinfi -it --mount type=bind,src=/home/spire/source,dst=/opt/source python:3.9.5  bash
+
+docker run python:3.9.5 siteinfi -i -t bash
+
+
+docker run -it --rm --name logs_loader -v "/home/spire/source/sib/siteinfity.log.parser":/usr/src/widget_app python:3.9.5 bash
+
+/opt/source/sib
+
+export SI_SOURCE_LOG_DIR=/opt/source/sib/audit.logs && export SI_SI_POOL_INTERVAL=10 && SI_DEST_DIR=/opt/source/sib/audit.logs/archive && export SI_DB_SERVER=tcp:192.168.203.128,1433 && export SI_DB_DATABASE=SiteInfinityDB && export SI_DB_USERNAME=sa && export SI_DB_PASS=abcd@1234 && python3 BootStart.py
+
+
+docker run -it --rm --name my-first-python-script -v "$PWD":/usr/src/widget_app python:3 python my_script.py
+
+
+docker run -it --rm --name siteinfinitysync -v "/home/spire/source/sib/siteinfity.log.parser":/mnt siteinfinitysync:1.0.0  
+
+docker run -it --rm --name siteinfinitysync -v "/home/spire/source/sib/audit.logs":/mnt/audit.logs --env  siteinfinitysync:1.0.0  bash
+
+--env SI_SOURCE_LOG_DIR=/home/spire/source/sib/audit.logs --env SI_SI_POOL_INTERVAL=10 --env SI_DEST_DIR=/home/spire/source/sib/audit.logs/archive --env SI_DB_SERVER=tcp:192.168.203.128,1433 --env SI_DB_DATABASE=SiteInfinityDB --env SI_DB_USERNAME=sa --env SI_DB_PASS=abcd@1234
+
+--env SI_SOURCE_LOG_DIR=/home/spire/source/sib/audit.logs
+--env SI_SI_POOL_INTERVAL=10
+--env SI_DEST_DIR=/home/spire/source/sib/audit.logs/archive
+--env SI_DB_SERVER=tcp:192.168.203.128,1433
+--env SI_DB_DATABASE=SiteInfinityDB
+--env SI_DB_USERNAME=sa
+--env SI_DB_PASS=abcd@1234
+
+
+docker run -it --rm --name siteinfinitysync -v "/home/spire/source/sib/siteinfity.log.parser":/mnt --env SI_SOURCE_LOG_DIR=/home/spire/source/sib/audit.logs --env SI_SI_POOL_INTERVAL=10 --env SI_DEST_DIR=/home/spire/source/sib/audit.logs/archive --env SI_DB_SERVER=tcp:192.168.203.128,1433 --env SI_DB_DATABASE=SiteInfinityDB --env SI_DB_USERNAME=sa --env SI_DB_PASS=abcd@1234 siteinfinitysync:1.0.0  
+
+docker run -d --name siteinfinitysync -v "/home/spire/source/sib/siteinfity.log.parser":/mnt --env SI_SOURCE_LOG_DIR=/home/spire/source/sib/audit.logs --env SI_SI_POOL_INTERVAL=10 --env SI_DEST_DIR=/home/spire/source/sib/audit.logs/archive --env SI_DB_SERVER=tcp:192.168.203.128,1433 --env SI_DB_DATABASE=SiteInfinityDB --env SI_DB_USERNAME=sa --env SI_DB_PASS=abcd@1234 siteinfinitysync:1.0.0  
+
+docker run -d --name siteinfinitysync -v "/home/spire/source/sib/siteinfity.log.parser":/mnt --env SI_SOURCE_LOG_DIR=/home/spire/source/sib/audit.logs --env SI_SI_POOL_INTERVAL=10 --env SI_DEST_DIR=/home/spire/source/sib/audit.logs/archive --env SI_DB_SERVER=tcp:192.168.203.128,1433 --env SI_DB_DATABASE=SiteInfinityDB --env SI_DB_USERNAME=sa --env SI_DB_PASS=abcd@1234 siteinfinitysync:1.0.1  
+
+docker save siteinfinitysync:1.0.1 | gzip > siteinfinitysync.container.1.0.1.tar.gz
