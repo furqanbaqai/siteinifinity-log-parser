@@ -1,0 +1,35 @@
+{
+    "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
+    "ItemId": "3abadd8a-83b5-4263-b6a7-04e3af48b084",
+    "EventType": "Updated",
+    "ItemTypeFullName": "Telerik.Sitefinity.Security.Model.Role",
+    "ItemType": "Role",
+    "ItemProviderName": "AppRoles",
+    "Timestamp": "2021-06-29T07:55:10.6952099Z",
+    "SiteName": "SIB",
+    "UserIP": "10.64.23.21",
+    "RoleName": "BackendUsers",
+    "ItemParent": "",
+    "ItemUrl": null,
+    "ItemUrlsSecondary": {
+        "$type": "System.String[], mscorlib",
+        "$values": []
+    },
+    "ItemLanguage": "en",
+    "UserID": "00000000-0000-0000-0000-000000000000",
+    "UserName": "Anonymous",
+    "UserRoles": {
+        "$type": "System.Linq.Enumerable+WhereSelectListIterator`2[[Telerik.Sitefinity.Security.RoleInfo, Telerik.Sitefinity],[System.String, mscorlib]], System.Core",
+        "$values": [
+            "Everyone",
+            "Anonymous"
+        ]
+    },
+    "UserProvider": null,
+    "EventTags": {
+        "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+        "$values": [
+            "Updated"
+        ]
+    }
+}

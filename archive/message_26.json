@@ -1,0 +1,28 @@
+{
+    "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib",
+    "UserID": "4ad7e35c-137f-4025-9a14-df5e0a69563b",
+    "Timestamp": "2021-06-29T11:32:29.2449448Z",
+    "UserIP": "10.49.100.158",
+    "UserRoles": {
+        "$type": "System.Linq.Enumerable+WhereSelectListIterator`2[[Telerik.Sitefinity.Security.RoleInfo, Telerik.Sitefinity],[System.String, mscorlib]], System.Core",
+        "$values": [
+            "Everyone",
+            "Authenticated",
+            "BackendUsers",
+            "Administrators"
+        ]
+    },
+    "UserName": "fahmed@wewanttraffic.com",
+    "Messages": {
+        "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+        "$values": [
+            "User with User Name fahmed@wewanttraffic.com logged out successfully from IP 10.49.100.158 on 6/29/2021 11:32:29 AM"
+        ]
+    },
+    "EventTags": {
+        "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+        "$values": [
+            "Logout"
+        ]
+    }
+}

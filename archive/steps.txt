@@ -1,0 +1,31 @@
+·         Added my ID AHFAU832 to backenduser and Administrators group through API
+
+·         Login To Sitefinity with my ID
+
+·         Created Role   TestRole
+
+·         Assigned Permission to the TestRole
+
+§  View Configuration
+
+§  Change Configuration
+
+§  View Documents
+
+·         Assigned User to TestRole
+
+§  test10014@test.com
+
+§  adel.kazimi@wewanttraffic.com
+
+·         Un-Assigned User from TestRole
+
+§  adel.kazimi@wewanttraffic.com
+
+·         Deleted User
+
+§  Hammad Ahmed (From BackendUser and Administrator)
+
+·         Edit User
+
+§  Basit Khan      Assigned TestRole

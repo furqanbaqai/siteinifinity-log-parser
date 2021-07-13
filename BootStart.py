@@ -40,7 +40,7 @@ _ENV_SI_DB_USERNAME          = ''
 _ENV_SI_DB_PASS              = '' 
 cursor = None
 # END
-
+_count = 0
 
 # Shows banner on the screen
 def showBanner():
@@ -89,7 +89,7 @@ def loadAndProcessFiles():
             contents     = f.readlines()
             ctrNoOfLines = len(contents)
             for content in contents:
-                try:
+                try:                    
                     parseContent(content) 
                 except Exception as e:               
                     logging.error(f'Error while parsing content: {e!r}')
@@ -167,7 +167,16 @@ def parseContent(contentLine):
     userID              = inlineMessage['UserID'] if not inlineMessage['UserID'] == None else ''        
     userIP              = inlineMessage['UserIP'] if 'UserIP' in inlineMessage else ''                                
     eventType           = inlineMessage['EventType'] if 'EventType' in inlineMessage else ''
-
+    # Temp code for vieweing the json    
+    global _count
+    json_formatted_str = json.dumps(inlineMessage, indent=2)
+    #print(json.dumps(json_formatted_str, indent=4, sort_keys=True))     
+    # print('Writing content to the file')
+    # with open(f'./archive/message_{_count}.json', 'w+') as f:
+    #     f.write(json.dumps(inlineMessage))
+    # _count = _count + 1
+    # return               
+    # END
     if eventType == '':
         eventType = 'UserLogin' if 'LoginResult' in inlineMessage else ''
 

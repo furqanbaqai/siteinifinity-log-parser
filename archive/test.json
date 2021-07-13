@@ -1,0 +1,27 @@
+{
+    "Message": "{\"$type\":\"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object, mscorlib]], mscorlib\",\"ItemId\":\"a953aeac-c256-4d79-86a4-f525ec6b8942\",\"EventType\":\"Updated\",\"ItemTypeFullName\":\"Telerik.Sitefinity.Security.Model.Role\",\"ItemType\":\"Role\",\"ItemProviderName\":\"AppRoles\",\"Timestamp\":\"2021-06-29T11:13:58.8006082Z\",\"SiteName\":\"SIB\",\"UserIP\":\"10.64.22.23\",\"RoleName\":\"Administrators\",\"ItemParent\":\"\",\"ItemUrl\":null,\"ItemUrlsSecondary\":{\"$type\":\"System.String[], mscorlib\",\"$values\":[]},\"ItemLanguage\":\"en\",\"UserID\":\"00000000-0000-0000-0000-000000000000\",\"UserName\":\"Anonymous\",\"UserRoles\":{\"$type\":\"System.Linq.Enumerable+WhereSelectListIterator`2[[Telerik.Sitefinity.Security.RoleInfo, Telerik.Sitefinity],[System.String, mscorlib]], System.Core\",\"$values\":[\"Everyone\",\"Anonymous\"]},\"UserProvider\":null,\"EventTags\":{\"$type\":\"System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib\",\"$values\":[\"Updated\"]}}",
+    "Categories": [
+        "Audit"
+    ],
+    "Priority": -1,
+    "EventId": 1,
+    "Severity": 8,
+    "LoggedSeverity": "Information",
+    "Title": "",
+    "TimeStamp": "2021-06-29T11:14:06.92112Z",
+    "MachineName": "SR02WWEBCMS01",
+    "AppDomainName": "/LM/W3SVC/3/ROOT-1-132694375336345387",
+    "ProcessId": "3876",
+    "ProcessName": "c:\\windows\\system32\\inetsrv\\w3wp.exe",
+    "ManagedThreadName": null,
+    "Win32ThreadId": "6024",
+    "ExtendedProperties": {},
+    "TimeStampString": "6/29/2021 11:14:06 AM",
+    "ActivityId": "00000000-0000-0000-0000-000000000000",
+    "RelatedActivityId": null,
+    "ErrorMessages": null,
+    "ActivityIdString": "00000000-0000-0000-0000-000000000000",
+    "CategoriesStrings": [
+        "Audit"
+    ]
+}

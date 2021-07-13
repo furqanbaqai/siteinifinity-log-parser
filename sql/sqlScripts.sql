@@ -4,14 +4,19 @@ CREATE TABLE audit_logs (
     LogTime DATETIME,
     MachineName VARCHAR (64),
     ProcessID INT,
-    ProcessName VARCHAR(128),
-    UserName    VARCHAR(128),
-    UserID      VARCHAR(128),
-    UserIP      VARCHAR(64),
-    EventType   VARCHAR(64),
-    ItemType    VARCHAR(64),
+    ProcessName      VARCHAR(128),
+    UserName         VARCHAR(128),
+    UserID           VARCHAR(128),
+    UserIP           VARCHAR(64),
+    EventType        VARCHAR(64),
+    ItemType         VARCHAR(64),
     ItemTypeFullName VARCHAR(128),
-    ItemTitle   VARCHAR(64),
+    ItemTitle       VARCHAR(64),
+    /*[31072021]: ADDITIONS*/    
+    RoleName        VARCHAR(128), 
+    EventTagsValue  VARCHAR(256), 
+    JSONOBJ         NVARCHAR(max),
+    /*END*/
     CreatedOn  DATETIME DEFAULT CURRENT_TIMESTAMP    
 );
 
