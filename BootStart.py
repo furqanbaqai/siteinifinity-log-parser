@@ -7,10 +7,14 @@
 # sudo apt install unixodbc-dev
 # pip3 install pyodbc
 # pip3 install dateparser
+#
+# CHANGE HISTORY
+# --------------
+# - [FB:20221117]: Adding facility to parse New / Old fields in the database
+#
 
 
 import os
-import sys
 import schedule
 import time
 import logging
@@ -38,7 +42,8 @@ _ENV_SI_DB_SERVER            = ''
 _ENV_SI_DB_DATABASE          = ''
 _ENV_SI_DB_USERNAME          = ''
 _ENV_SI_DB_PASS              = '' 
-cursor = None
+cursor  = None
+cxn     = None
 # END
 _count = 0
 
@@ -60,10 +65,15 @@ def loadEnvVariables():
     _ENV_SI_SOURCE_LOG_DIR      = os.getenv('SI_SOURCE_LOG_DIR') if not os.getenv('SI_SOURCE_LOG_DIR') == None else os.path.dirname(os.path.realpath(__file__)) + '/audit.logs'
     _ENV_SI_SI_POOL_INTERVAL    = int(os.getenv('SI_POOL_INTERVAL')) if not os.getenv('SI_POOL_INTERVAL') == None else  10
     _ENV_SI_DEST_DIR            = os.getenv('SI_DEST_DIR') if not os.getenv('SI_DEST_DIR') == None else os.path.dirname(os.path.realpath(__file__)) + '/audit.logs/archive'
-    _ENV_SI_DB_SERVER           = os.getenv('SI_DB_SERVER') 
-    _ENV_SI_DB_DATABASE         = os.getenv('SI_DB_DATABASE') 
-    _ENV_SI_DB_USERNAME         = os.getenv('SI_DB_USERNAME') 
-    _ENV_SI_DB_PASS             = os.getenv('SI_DB_PASS')
+    # TODO! Remove following comments
+    # _ENV_SI_DB_SERVER           = os.getenv('SI_DB_SERVER') 
+    # _ENV_SI_DB_DATABASE         = os.getenv('SI_DB_DATABASE') 
+    # _ENV_SI_DB_USERNAME         = os.getenv('SI_DB_USERNAME') 
+    # _ENV_SI_DB_PASS             = os.getenv('SI_DB_PASS')    
+    _ENV_SI_DB_SERVER           = '192.168.203.128'
+    _ENV_SI_DB_DATABASE         = 'SiteInfinity'
+    _ENV_SI_DB_USERNAME         = 'sa'
+    _ENV_SI_DB_PASS             = 'BLe9XvQTRgyr3hxW'
 
     pass
 
@@ -76,12 +86,14 @@ def startScheduleJob():
         time.sleep(1)    
 
 # Load and process files
-def loadAndProcessFiles():        
+def loadAndProcessFiles():                
     logging.info('Loading files from the configured folder')
     ctrNoOfLines = 0    
     ctrNoOfFiles = 0
     allFiles = glob.glob(os.path.join(_ENV_SI_SOURCE_LOG_DIR, "*.log"))
     ctrNoOfFiles = len(allFiles)
+    if ctrNoOfFiles > 0:
+        connectToMSSQL()    # Connect to the MSSQL server
     logging.info('Number of files detected: '+ str(ctrNoOfFiles))
     for file in allFiles:
         logging.info('Loading file: '+file)
@@ -96,11 +108,14 @@ def loadAndProcessFiles():
         # move file to archive location
         try:
             moveFile(file,_ENV_SI_DEST_DIR);
+            # Close connection here            
+            cursor.close()
+            cxn.close()
         except Exception as e:
             logging.error(f'Error while moving the file: {e!r}')
         # Show parse summary        
         logging.info('No of lines parsed: '+str(ctrNoOfLines))
-    pass
+   
 
 def connectToMSSQL():
     # reference: https://cutt.ly/Mnj6p0l
@@ -145,7 +160,8 @@ def connectToMSSQL():
         logging.info(f'Connected SUCESFULLY')
     except Exception as e:
         logging.error(f'Error while connecting with the database: {e!r}')
-    global cursor
+    global cursor, cxn
+    cxn = cnxn
     cursor = cnxn.cursor()
     pass
 
@@ -167,16 +183,11 @@ def parseContent(contentLine):
     userID              = inlineMessage['UserID'] if not inlineMessage['UserID'] == None else ''        
     userIP              = inlineMessage['UserIP'] if 'UserIP' in inlineMessage else ''                                
     eventType           = inlineMessage['EventType'] if 'EventType' in inlineMessage else ''
-    # Temp code for vieweing the json    
-    global _count
-    json_formatted_str = json.dumps(inlineMessage, indent=2)
-    #print(json.dumps(json_formatted_str, indent=4, sort_keys=True))     
-    # print('Writing content to the file')
-    # with open(f'./archive/message_{_count}.json', 'w+') as f:
-    #     f.write(json.dumps(inlineMessage))
-    # _count = _count + 1
-    # return               
-    # END
+    _dictOldNewValue    = None
+    if 'Updates' in inlineMessage:
+        logging.info("Message with old/new values detected")
+        _dictOldNewValue = parseOldNewValues(inlineMessage.get('Updates'))            
+    global _count   
     if eventType == '':
         eventType = 'UserLogin' if 'LoginResult' in inlineMessage else ''
 
@@ -187,24 +198,33 @@ def parseContent(contentLine):
     timeStamp           = dateutil.parser.parse(timeStamp)
     sqlInsert           = f"INSERT INTO [dbo].[audit_logs]([LoggedSeverity],[LogTime]," \
                               "[MachineName],[ProcessID],[ProcessName],[UserName],[UserID],[UserIP],[EventType]," \
-                              "[ItemType],[ItemTypeFullName],[ItemTitle],[CreatedOn])" \
-                              " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)"    
+                              "[ItemType],[ItemTypeFullName],[ItemTitle],[CreatedOn], [JSONOBJ])" \
+                              " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?)"    
     
     global cursor
     ctrTrans            = cursor.execute(sqlInsert,loggedSeverity,timeStamp,machineName,
                                processID,processName,userName,userID,userIP,eventType,itemType,
-                               itemFullType,itemTitle).rowcount    
+                               itemFullType,itemTitle, None if _dictOldNewValue == None else json.dumps(_dictOldNewValue)).rowcount    
     cursor.commit()
     logging.info(f'Data saved sucesfully. Records impacted: {ctrTrans}')
 
     pass
 
+# [FB:20221117]: Procedure for parsing old/new values
+def parseOldNewValues(updates):
+    _dictKeyValue = []
+    for key in updates:
+        if key == '$type':
+            continue        
+        _dictKeyValue.append({"key": f"{key}", "oldvalue": f"{updates.get(key).get('Old')}", "newvalue": f"{updates.get(key).get('New')}"})
+        # _dictKeyValue.append(updates.get(key))
+    return _dictKeyValue
+
 # Moves the file to archive location
 def moveFile(file, destination):
     head, tail = os.path.split(file);
-    logging.info('Moving file: '+ file+' to location: '+destination + '/'+ tail)
-    shutil.move(file,os.path.join(destination + '/' + tail))    
-    pass
+    logging.info('Moving file: '+ file+' to location: '+destination + '/'+ tail + f".{time.strftime('%Y%m%d%H%M%S%s')}")    
+    shutil.move(file,os.path.join(destination + '/' + tail + f".{time.strftime('%Y%m%d%H%M%S%s')}"))        
 
 
 
@@ -212,5 +232,7 @@ def moveFile(file, destination):
 if __name__ == '__main__':    
     loadEnvVariables(); # load argument variables
     showBanner()        # Display banner
-    connectToMSSQL()    # Connect to the MSSQL server
+    # [FB:20221117]: Connection will be established each time a yield starts
+    # connectToMSSQL()    # Connect to the MSSQL server    
     startScheduleJob()  # Start schedule job    
+    

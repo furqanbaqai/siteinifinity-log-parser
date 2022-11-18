@@ -21,3 +21,5 @@ CREATE TABLE audit_logs (
 );
 
 CREATE INDEX ix_audit_logs_logtime on audit_logs(LogTime);
+ALTER TABLE [dbo].[audit_logs]  WITH CHECK ADD  CONSTRAINT [audit_logs_JSONOBJ_ISJSON] CHECK  ((isjson([JSONOBJ])=(1)))
+
