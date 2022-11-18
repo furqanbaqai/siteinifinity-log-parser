@@ -15,7 +15,6 @@
 
 
 import os
-import sys
 import schedule
 import time
 import logging
@@ -43,7 +42,8 @@ _ENV_SI_DB_SERVER            = ''
 _ENV_SI_DB_DATABASE          = ''
 _ENV_SI_DB_USERNAME          = ''
 _ENV_SI_DB_PASS              = '' 
-cursor = None
+cursor  = None
+cxn     = None
 # END
 _count = 0
 
@@ -66,10 +66,14 @@ def loadEnvVariables():
     _ENV_SI_SI_POOL_INTERVAL    = int(os.getenv('SI_POOL_INTERVAL')) if not os.getenv('SI_POOL_INTERVAL') == None else  10
     _ENV_SI_DEST_DIR            = os.getenv('SI_DEST_DIR') if not os.getenv('SI_DEST_DIR') == None else os.path.dirname(os.path.realpath(__file__)) + '/audit.logs/archive'
     # TODO! Remove following comments
-    _ENV_SI_DB_SERVER           = os.getenv('SI_DB_SERVER') 
-    _ENV_SI_DB_DATABASE         = os.getenv('SI_DB_DATABASE') 
-    _ENV_SI_DB_USERNAME         = os.getenv('SI_DB_USERNAME') 
-    _ENV_SI_DB_PASS             = os.getenv('SI_DB_PASS')    
+    # _ENV_SI_DB_SERVER           = os.getenv('SI_DB_SERVER') 
+    # _ENV_SI_DB_DATABASE         = os.getenv('SI_DB_DATABASE') 
+    # _ENV_SI_DB_USERNAME         = os.getenv('SI_DB_USERNAME') 
+    # _ENV_SI_DB_PASS             = os.getenv('SI_DB_PASS')    
+    _ENV_SI_DB_SERVER           = '192.168.203.128'
+    _ENV_SI_DB_DATABASE         = 'SiteInfinity'
+    _ENV_SI_DB_USERNAME         = 'sa'
+    _ENV_SI_DB_PASS             = 'BLe9XvQTRgyr3hxW'
 
     pass
 
@@ -82,13 +86,14 @@ def startScheduleJob():
         time.sleep(1)    
 
 # Load and process files
-def loadAndProcessFiles():            
-    connectToMSSQL()    # Connect to the MSSQL server
+def loadAndProcessFiles():                
     logging.info('Loading files from the configured folder')
     ctrNoOfLines = 0    
     ctrNoOfFiles = 0
     allFiles = glob.glob(os.path.join(_ENV_SI_SOURCE_LOG_DIR, "*.log"))
     ctrNoOfFiles = len(allFiles)
+    if ctrNoOfFiles > 0:
+        connectToMSSQL()    # Connect to the MSSQL server
     logging.info('Number of files detected: '+ str(ctrNoOfFiles))
     for file in allFiles:
         logging.info('Loading file: '+file)
@@ -103,7 +108,9 @@ def loadAndProcessFiles():
         # move file to archive location
         try:
             moveFile(file,_ENV_SI_DEST_DIR);
-            pass
+            # Close connection here            
+            cursor.close()
+            cxn.close()
         except Exception as e:
             logging.error(f'Error while moving the file: {e!r}')
         # Show parse summary        
@@ -153,7 +160,8 @@ def connectToMSSQL():
         logging.info(f'Connected SUCESFULLY')
     except Exception as e:
         logging.error(f'Error while connecting with the database: {e!r}')
-    global cursor
+    global cursor, cxn
+    cxn = cnxn
     cursor = cnxn.cursor()
     pass
 
@@ -225,7 +233,6 @@ if __name__ == '__main__':
     loadEnvVariables(); # load argument variables
     showBanner()        # Display banner
     # [FB:20221117]: Connection will be established each time a yield starts
-    # connectToMSSQL()    # Connect to the MSSQL server
-    # TODO! Remove the commend below
+    # connectToMSSQL()    # Connect to the MSSQL server    
     startScheduleJob()  # Start schedule job    
     
