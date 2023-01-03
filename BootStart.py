@@ -66,14 +66,14 @@ def loadEnvVariables():
     _ENV_SI_SI_POOL_INTERVAL    = int(os.getenv('SI_POOL_INTERVAL')) if not os.getenv('SI_POOL_INTERVAL') == None else  10
     _ENV_SI_DEST_DIR            = os.getenv('SI_DEST_DIR') if not os.getenv('SI_DEST_DIR') == None else os.path.dirname(os.path.realpath(__file__)) + '/audit.logs/archive'
     # TODO! Remove following comments
-    # _ENV_SI_DB_SERVER           = os.getenv('SI_DB_SERVER') 
-    # _ENV_SI_DB_DATABASE         = os.getenv('SI_DB_DATABASE') 
-    # _ENV_SI_DB_USERNAME         = os.getenv('SI_DB_USERNAME') 
-    # _ENV_SI_DB_PASS             = os.getenv('SI_DB_PASS')    
-    _ENV_SI_DB_SERVER           = '192.168.203.128'
-    _ENV_SI_DB_DATABASE         = 'SiteInfinity'
-    _ENV_SI_DB_USERNAME         = 'sa'
-    _ENV_SI_DB_PASS             = 'BLe9XvQTRgyr3hxW'
+    _ENV_SI_DB_SERVER           = os.getenv('SI_DB_SERVER') 
+    _ENV_SI_DB_DATABASE         = os.getenv('SI_DB_DATABASE') 
+    _ENV_SI_DB_USERNAME         = os.getenv('SI_DB_USERNAME') 
+    _ENV_SI_DB_PASS             = os.getenv('SI_DB_PASS')    
+    # _ENV_SI_DB_SERVER           = '192.168.203.128'
+    # _ENV_SI_DB_DATABASE         = 'SiteInfinity'
+    # _ENV_SI_DB_USERNAME         = 'sa'
+    # _ENV_SI_DB_PASS             = 'BLe9XvQTRgyr3hxW'
 
     pass
 
@@ -146,7 +146,7 @@ def connectToMSSQL():
     database    = _ENV_SI_DB_DATABASE 
     username    = _ENV_SI_DB_USERNAME 
     password    = _ENV_SI_DB_PASS
-    connStr     = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password};Connect Timeout=10;'
+    connStr     = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password};Connect Timeout=10;autocommit=True;ENCRYPT=no;MARS_Connection=yes;MultipleActiveResultSets=True;'
     logging.info(connStr)
     try:
         logging.info(f'Connectiong to database [{database}] on server [{server}] Using driver: [{driver}]')
